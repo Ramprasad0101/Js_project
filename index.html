@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: whitesmoke;
+            margin: 10;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            height: 600px;
+            text-align: center;
+            background-color: rgb(209, 224, 150);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px 10px rgba(14, 81, 204, 0.5);
+        }
+
+        h1 {
+            color: rgb(200, 8, 72);
+        }
+
+        .buttons {
+            margin-bottom: 50px;
+        }
+
+        button {
+            background-color: orange;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            border-radius: 15px;
+            margin: 10px;
+            font-size: 20px;
+            box-shadow: 10px 0px 10px 10px rgba(86, 18, 4, 0.5);
+        }
+
+        button:hover {
+            background-color: rgb(10, 154, 187);
+        }
+
+        .board {
+            border: 4px solid rgba(234, 82, 36, 0.959);
+            border-radius: 10px;
+            overflow: hidden;
+            display: inline-block;
+            background-color: blanchedalmond;
+            padding: 10px;
+            box-shadow: 0px 0px 10px 10px rgba(22, 13, 83, 0.5);
+        }
+
+        .row {
+            display: flex;
+        }
+
+        .cell {
+            width: 100px;
+            height: 100px;
+            border: 2px solid rgb(6, 35, 37);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: x-large;
+            cursor: pointer;
+            background-color: rgb(214, 79, 209);
+        }
+
+        .cell:hover {
+            background-color: rgb(29, 189, 200);
+        }
+
+        .winner {
+            background-color: violet;
+            color: rgb(208, 25, 25);
+        }
+
+        .draw {
+            background-color: orange;
+            color: rgb(153, 15, 15);
+        }
+    </style>
+</head>
+<body style="background-color: rgb(108, 178, 181);">
+<div class="container">
+    <h1><strong>Tic Tac Toe</strong></h1>
+    <div class="buttons">
+        <button onclick="startGame('human')">Play with friend</button>
+        <button onclick="startGame('computer')">Play with Computer</button>
+        <button onclick="refreshPage()">Refresh</button>
+    </div>
+    <div class="board" id="tic-tac-toe">
+        <div class="row">
+            <div class="cell" onclick="handleClick(0)"></div>
+            <div class="cell" onclick="handleClick(1)"></div>
+            <div class="cell" onclick="handleClick(2)"></div>
+        </div>
+        <div class="row">
+            <div class="cell" onclick="handleClick(3)"></div>
+            <div class="cell" onclick="handleClick(4)"></div>
+            <div class="cell" onclick="handleClick(5)"></div>
+        </div>
+        <div class="row">
+            <div class="cell" onclick="handleClick(6)"></div>
+            <div class="cell" onclick="handleClick(7)"></div>
+            <div class="cell" onclick="handleClick(8)"></div>
+        </div>
+    </div>
+</div>
+<script>
+    let cells = document.querySelectorAll('.cell');
+    let currentPlayer = 'X';
+    let gameOver = false;
+    let humanVsHuman = false;
+
+    function startGame(mode) {
+        humanVsHuman = mode === 'human';
+        resetBoard();
+    }
+
+    function resetBoard() {
+        cells.forEach(cell => cell.innerText = '');
+        gameOver = false;
+    }
+
+    function checkWin() {
+        const winConditions = [
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8],
+            [0, 3, 6],
+            [1, 4, 7],
+            [2, 5, 8],
+            [0, 4, 8],
+            [2, 4, 6]
+        ];
+
+        for (condition of winConditions) {
+            const [a, b, c] = condition;
+            if (cells[a].innerText !== '' && cells[a].innerText === cells[b].innerText && cells[b].innerText === cells[c].innerText) {
+                gameOver = true;
+                cells[a].classList.add('winner');
+                cells[b].classList.add('winner');
+                cells[c].classList.add('winner');
+                setTimeout(() => {
+                    alert(`${currentPlayer === 'X' ? 'O' : 'X'} wins!`);
+                }, 100);
+                return;
+            }
+        }
+
+        if ([...cells].every(cell => cell.innerText !== '')) {
+            gameOver = true;
+            cells.forEach(cell => cell.classList.add('draw'));
+            setTimeout(() => {
+                alert("It's a draw!");
+            }, 100);
+        }
+    }
+
+    function handleClick(index) {
+        if (!gameOver && cells[index].innerText === '') {
+            cells[index].innerText = currentPlayer;
+            checkWin();
+            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+            if (!humanVsHuman && !gameOver) {
+                setTimeout(computerMove, 2000); // Delay of 2 seconds (2000 milliseconds) before computer move
+            }
+        }
+    }
+
+    function computerMove() {
+        for (let i = 0; i < cells.length; i++) {
+            if (cells[i].innerText === '') {
+                cells[i].innerText = currentPlayer;
+                checkWin();
+                currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+                return;
+            }
+        }
+    }
+
+    function refreshPage() {
+        window.location.reload();
+    }
+</script>
+</body>
+</html>
